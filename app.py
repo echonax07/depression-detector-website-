@@ -9,8 +9,8 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 
 app = Flask(__name__)
-model = pickle.load(open(r'D:\Project\Twitter_depression_detector\src\model.pkl', 'rb'))
-tv=pickle.load(open(r'D:\Project\Twitter_depression_detector\src\tv.pkl', 'rb'))
+model = pickle.load(open(r'model.pkl', 'rb'))
+tv=pickle.load(open(r'tv.pkl', 'rb'))
 
 #default page of our web-app
 @app.route('/')
@@ -26,7 +26,7 @@ def plot_png():
         username = request.form['username']
         startdate= request.form['startdate']
         enddate = request.form['enddate']
-        
+
     data = scraper(username, startdate, enddate)
     data = predict(data, tv, model)
     fig = create_figure(data)
