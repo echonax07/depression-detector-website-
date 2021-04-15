@@ -1,5 +1,5 @@
 matplotlib==3.4.1
-snscrape==0.3.5.dev96+g47fbc2a
+git+git://github.com/JustAnotherArchivist/snscrape.git
 nltk==3.5
 tweet_preprocessor==0.6.0
 numpy==1.20.2
