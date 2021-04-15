@@ -1,0 +1,10 @@
+<div class="login">
+    <h1>Predict depressive text here</h1>
+    <h3> Enter the tweet in the given text field</h3>
+    <!-- Main Input For Receiving Query to our ML -->
+    <form action="/plot" method="post">
+        <input type="text" name="Tweet" placeholder="Tweet" required="required"/>
+        <button type="submit" class="btn">Predict</button>
+    </form>
+    <br> <br> {{ prediction_text }}
+</div>
