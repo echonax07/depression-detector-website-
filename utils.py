@@ -13,7 +13,7 @@ import re
 import ftfy
 import pickle
 import preprocessor as p
-p.set_options(p.OPT.URL, p.OPT.MENTION, p.OPT.RESERVED)
+#p.set_options(p.OPT.URL, p.OPT.MENTION, p.OPT.RESERVED)
 import pandas as pd
 import snscrape.modules.twitter as sntwitter
 import itertools
