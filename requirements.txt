@@ -1,7 +1,7 @@
 matplotlib==3.4.1
 git+git://github.com/JustAnotherArchivist/snscrape.git
 nltk==3.5
-tweet_preprocessor==0.6.0
+tweet_preprocessor
 numpy==1.20.2
 Flask==1.1.2
 ftfy==5.9
