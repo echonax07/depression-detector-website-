@@ -12,8 +12,8 @@ import numpy as np
 import re
 import ftfy
 import pickle
-import preprocessor as p
-p.set_options(p.OPT.URL, p.OPT.MENTION, p.OPT.RESERVED)
+from preprocessor.api import clean, tokenize, parse
+#p.set_options(p.OPT.URL, p.OPT.MENTION, p.OPT.RESERVED)
 import pandas as pd
 import snscrape.modules.twitter as sntwitter
 import itertools
@@ -169,7 +169,7 @@ def clean_tweets(tweets):
         tweet = str(tweet)
         # if url links then dont append to avoid news articles
         # also check tweet length, save those > 10 (length of word "depression")
-        tweet = p.clean(tweet)
+        tweet = clean(tweet)
         if re.match("(\w+:\/\/\S+)", tweet) == None:
             # remove hashtag, @mention, emoji and image URLs
             #             tweet = re.sub('[^A-Za-z0-9]+', '', tweet)
