@@ -46,10 +46,8 @@
     <form action="{{ url_for('plot_png')}}"method="post">
         <label for="username">Username</label>
         <input type="text" name="username" placeholder="username" required="required" />
-        <label for="startdate">Start date</label>
-        <input type="date" name="startdate" placeholder="start date" required="required" />
-        <label for="enddate">End date</label>
-		<input type="date" name="enddate" placeholder="enddate" required="required" />
+        <label for="count">Input the no. of tweets you wish to analyze</label>
+        <input type="number" name="count" required="required" min="1" max="3200" />
 
         <button type="submit" class="btn btn-primary btn-block btn-large">Submit</button>
     </form>

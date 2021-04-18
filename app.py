@@ -7,10 +7,13 @@ import io
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-
+from datetime import datetime
+from matplotlib import  gridspec
 app = Flask(__name__)
 model = pickle.load(open(r'model.pkl', 'rb'))
 tv=pickle.load(open(r'tv.pkl', 'rb'))
+
+
 
 #default page of our web-app
 @app.route('/')
@@ -24,65 +27,44 @@ def plot_png():
     print("The form is loaded")
     if request.method == 'POST':
         username = request.form['username']
-        startdate= request.form['startdate']
-        enddate = request.form['enddate']
+        count= request.form['count']
 
-    data = scraper(username, startdate, enddate)
+
+    data,start_date,end_date = scraper(username, count)
     data = predict(data, tv, model)
-    fig = create_figure(data)
+    fig = create_figure(data,start_date,end_date)
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
     #return render_template('plot.html', name='new_plot', url='/static/images/plot.png')
 
 
-def create_figure(data):
-    dates = data['date'].unique()
-    count_depressive = dict.fromkeys(dates, 0)
-    count_non_depressive = dict.fromkeys(dates, 0)
+def create_figure(data,start_date,end_date):
+    plt.style.use('seaborn-white')
+    fig = plt.figure(figsize=(10, 5))
+    gs = gridspec.GridSpec(1, 2, width_ratios=[3, 1])
+    ax0 = plt.subplot(gs[0])
+    ax1 = plt.subplot(gs[1])
+    x = list(range(1, len(data) + 1))
 
-    for i in range(len(data)):
-        if data.loc[i, 'prediction'] == 1:
-            count_depressive[data.loc[i, 'date']] += 1
-        else:
-            count_non_depressive[data.loc[i, 'date']] += 1
-
-    # Numbers of pairs of bars you want
-    N = 2
-    # Data on X-axis
-    # Specify the values of blue bars (height)
-    blue_bar = list(count_non_depressive.values())
-    # Specify the values of orange bars (height)
-    orange_bar = list(count_depressive.values())
-    max1 = max(blue_bar)
-    max2 = max(orange_bar)
-    max_overall = max(max1, max2)
-    # Position of bars on x-axis
-    ind = np.arange(len(blue_bar))
-
-    fig, ax = plt.subplots(figsize=(10, 5))
-    # Figure size
-
-    # Width of a bar
-    width = 0.3
-
-    # Plotting
-    ax.bar(ind - width / 2, blue_bar, width, label='Non Depressive Tweets', zorder=100)
-    ax.bar(ind + width / 2, orange_bar, width, label='Depressive Tweets', zorder=100)
-
-    ax.set_xlabel('Date')
-    ax.set_ylabel('Count')
-    ax.set_title('Tweet Nature over time')
-
-    # xticks()
-    # First argument - A list of positions at which ticks should be placed
-    # Second argument -  A list of labels to place at the given locations
-    ax.set_xticks(ind + width)
-    ax.set_xticklabels((list(count_non_depressive.keys())))
-    ax.set_yticks(range(0, max_overall + 1))
+    # plot line plot
+    ax0.plot(x, data['prediction'], color='blue')
+    ax0.set_yticks(range(0, 2))
     # Finding the best position for legends and putting it
-    ax.legend(loc='best')
-    ax.grid(zorder=2)
+    ax0.legend(loc='best')
+    ax0.set_xlabel('Tweet Count')
+    ax0.set_ylabel('Tweet Nature')
+    ax0.set_title('Tweet Nature in the timeperiod: {} to {}'.format(start_date, end_date))
+
+    labels = 'Depressive', 'Non Depressive'
+    sizes = [100 * data['prediction'].tolist().count(1) / len(data),
+             100 * data['prediction'].tolist().count(0) / len(data)]
+    colors = ["Red", "Blue"]
+    # plot pie chart
+    ax1.pie(sizes, labels=labels, autopct='%1.1f%%',
+            shadow=True, startangle=90)
+    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    ax1.set_title('Ratio')
     fig.savefig('static/images/plot.png')
     return fig
 

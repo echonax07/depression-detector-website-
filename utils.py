@@ -21,7 +21,17 @@ from datetime import date,timedelta
 import pickle
 import matplotlib.pyplot as plt
 import numpy as np
+from datetime import datetime
 
+
+from creds import CONSUMER_KEY,CONSUMER_SECRET,access_token,access_token_secret
+import tweepy
+# authorization of consumer key and consumer secret
+auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+# set access to user's access key and access secret
+auth.set_access_token(access_token, access_token_secret)
+# calling the api
+api = tweepy.API(auth)
 
 
 # Expand Contraction
@@ -189,24 +199,25 @@ def clean_tweets(tweets):
     return cleaned_tweets
 
 
-def scraper(username, since, until):
-  # place id of india is b850c1bfd38f30e0
+def scraper(username, count):
+  # fetching the statuses
+  statuses = api.user_timeline(username, tweet_mode='extended', count=25)
 
-  # df = pd.DataFrame(itertools.islice(sntwitter.TwitterSearchScraper(
-  #     'from:{}'.format(username)).get_items(), no_of_tweets))
-  # df = df.loc[:, ['date', 'content']]
-  # return df
-  df = pd.DataFrame(itertools.islice(sntwitter.TwitterSearchScraper(
-    'from:{} since:{} until:{}'.format(username, since, until)).get_items(), 10000))
-  df = df.loc[:, ['date', 'renderedContent']]
-  return df
+  json_data = [s._json for s in statuses]
+
+  df = pd.io.json.json_normalize(json_data)
+  start_date = df.iloc[0, 0]
+  start_date = datetime.strftime(datetime.strptime(start_date, '%a %b %d %H:%M:%S +0000 %Y'), '%d-%m-%y')
+  end_date = df.iloc[-1, 0]
+  end_date = datetime.strftime(datetime.strptime(end_date, '%a %b %d %H:%M:%S +0000 %Y'), '%d-%m-%y')
+
+  df = df.loc[:, ['full_text']]
+  return df, start_date, end_date
 
 
 def predict(data, tv, model):
-  test_array = tv.transform(clean_tweets(data['renderedContent'])).toarray()
+  test_array = tv.transform(clean_tweets(data['full_text'])).toarray()
   prediction = model.predict(test_array)
 
   data['prediction'] = prediction
-  data['date'] = data['date'].dt.strftime("%y-%m-%d")
-  data = data.sort_values(by=['date'])
   return data
