@@ -201,7 +201,7 @@ def clean_tweets(tweets):
 
 def scraper(username, count):
   # fetching the statuses
-  statuses = api.user_timeline(username, tweet_mode='extended', count=25)
+  statuses = api.user_timeline(username, tweet_mode='extended', count=count)
 
   json_data = [s._json for s in statuses]
 
