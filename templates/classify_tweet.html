@@ -47,7 +47,7 @@
 
      <!-- Main Input For Receiving Query to our ML -->
     <form action="{{ url_for('classify')}}"method="post">
-        <label for="tweet">Tweet</label>
+{#        <label for="tweet">Tweet</label>#}
         <input type="text" name="tweet" placeholder="Enter your tweet here" required="required" />
         <button type="submit" class="btn btn-primary btn-block btn-large">Submit</button>
     </form>
