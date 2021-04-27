@@ -35,7 +35,7 @@
 <link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
 <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-<link rel="shortcut icon" type="image/jpg" href="static/images/favicon.png"/>
+
 </head>
 
 <body style="background: #000000;">
@@ -46,13 +46,16 @@
 	<h1>Depression Detector</h1>
 
      <!-- Main Input For Receiving Query to our ML -->
-     <a href="/show_history" class="btn btn-primary btn-block btn-large" >Show history</a>
-     <br> </br>
-     <a href="/classify_tweet" class="btn btn-primary btn-block btn-large">Classify a tweet</a>
+    <form action="{{ url_for('classify')}}"method="post">
+        <label for="tweet">Tweet</label>
+        <input type="text" name="tweet" placeholder="Enter your tweet here" required="required" />
+        <button type="submit" class="btn btn-primary btn-block btn-large">Submit</button>
+    </form>
 
    <br>
    <br>
-   {{ prediction_text }}
+
+     <p style="color:red"> {{ prediction_text }} </p>
 
  </div>
 </body>

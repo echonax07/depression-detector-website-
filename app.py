@@ -18,7 +18,18 @@ tv=pickle.load(open(r'tv.pkl', 'rb'))
 #default page of our web-app
 @app.route('/')
 def home():
+
     return render_template('index.html')
+
+@app.route('/show_history')
+def show_history():
+    return render_template('show_history.html')
+
+@app.route('/classify_tweet')
+def classify_tweet():
+    return render_template('classify_tweet.html')
+
+
 
 
 @app.route('/plot',methods=['POST'])
@@ -69,22 +80,21 @@ def create_figure(data,start_date,end_date):
     return fig
 
 
-# #To use the predict button in our web-app
-# @app.route('/predict',methods=['POST'])
-# def predict():
-#     #For rendering results on HTML GUI
-#     form = request.form
-#     if request.method == 'POST':
-#         username = request.form['username']
-#         period= request.form['period']
-#         df=scraper()
-#         test_array = tv.transform(clean_tweets(text)).toarray()
-#         prediction = model.predict(test_array)
-#         if prediction:
-#             return render_template('index.html', prediction_text='The tweet is depressive, Plz reachout a Mental Health Expert')
-#         else:
-#             return render_template('index.html',
-#                                    prediction_text='The tweet is not depressive')
+#To use the predict button in our web-app
+@app.route('/classify',methods=['POST'])
+def classify():
+    #For rendering results on HTML GUI
+    form = request.form
+    if request.method == 'POST':
+        text = [request.form['tweet']]
+        print("classify is loaded")
+        test_array = tv.transform(clean_tweets(text)).toarray()
+        prediction = model.predict(test_array)
+        if prediction:
+            return render_template('classify_tweet.html', prediction_text='The tweet is depressive, Plz reachout a Mental Health Expert')
+        else:
+            return render_template('classify_tweet.html',
+                                   prediction_text='The tweet is not depressive')
 
 
 if __name__ == "__main__":
