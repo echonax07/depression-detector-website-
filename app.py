@@ -18,7 +18,6 @@ tv=pickle.load(open(r'tv.pkl', 'rb'))
 #default page of our web-app
 @app.route('/')
 def home():
-
     return render_template('index.html')
 
 @app.route('/show_history')
