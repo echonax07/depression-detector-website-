@@ -1,9 +1,8 @@
-matplotlib==3.4.1
 git+https://github.com/JustAnotherArchivist/snscrape.git
 scikit-learn==0.24.2
 nltk==3.5
 tweet_preprocessor
-numpy
+numpy== 1.13.3
 Jinja2==3.0.3
 Flask
 ftfy==5.9
@@ -11,3 +10,4 @@ pandas
 tweet-preprocessor
 gunicorn
 Tweepy
+matplotlib==3.4.1
